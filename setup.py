@@ -7,7 +7,6 @@ setup(
     install_requires=[
         "requests",
         "bs4",
-        "base64",
         "cloudscraper"
     ],
     description="MediaSurfer is a powerful Python library that allows you to easily download media from multiple social platforms.",
