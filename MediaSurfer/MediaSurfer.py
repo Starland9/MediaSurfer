@@ -69,7 +69,7 @@ class Yt_ServIcE:
                                         )
                 json_data = response.json()
                 final_media_url = json_data.get(
-                    'fileName') if 'fileName' in json_data else json_data.get('url')
+                    'fileUrl') if 'fileUrl' in json_data else json_data.get('url')
 
                 l['mediaUrl'] = final_media_url
 
