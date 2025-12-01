@@ -4,3 +4,5 @@ deploy
 .venv/
 .env
 MediaSurfer/wsgi.py
+
+.venv
