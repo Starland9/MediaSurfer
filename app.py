@@ -2,6 +2,147 @@ import flask
 from MediaSurfer import *
 app = flask.Flask(__name__)
 
+# Simple OpenAPI JSON schema for the service
+OPENAPI_SPEC = {
+    "openapi": "3.0.0",
+    "info": {
+        "title": "MediaSurfer API",
+        "version": "1.0.0",
+        "description": "API pour télécharger des médias depuis différentes plateformes (YouTube, Instagram, TikTok, Spotify, Facebook, Pinterest)."
+    },
+    "paths": {
+        "/yt": {
+            "post": {
+                "summary": "Télécharger une resource YouTube",
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "url": {"type": "string"},
+                                    "type": {"type": "string", "description": "audio|video"},
+                                    "quality": {"type": "string", "description": "par exemple 720p, 1080p"}
+                                },
+                                "required": ["url", "type"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                                "example": {"status": "success", "ViDeO_LiNk_DeReCT": "https://..."}
+                            }
+                        }
+                    },
+                    "400": {"description": "Données invalides"},
+                    "500": {"description": "Erreur interne"}
+                }
+            }
+        },
+        "/insta": {
+            "post": {
+                "summary": "Télécharger depuis Instagram",
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {"schema": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}}
+                    }
+                },
+                "responses": {"200": {"description": "Succès", "content": {"application/json": {"example": {"status": "success", "ViDeO_LiNk_DeReCT": "https://..."}}}}, "500": {"description": "Erreur"}}
+            }
+        },
+        "/tiktok": {
+            "post": {
+                "summary": "Télécharger depuis TikTok",
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {"schema": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}}
+                    }
+                },
+                "responses": {"200": {"description": "Succès", "content": {"application/json": {"example": {"status": "success", "ViDeO_LiNk_DeReCT": "https://...", "Quality": "Best"}}}}, "500": {"description": "Erreur"}}
+            }
+        },
+        "/spotify": {
+            "post": {
+                "summary": "Télécharger depuis Spotify",
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {"schema": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}}
+                    }
+                },
+                "responses": {"200": {"description": "Succès", "content": {"application/json": {"example": {"status": "success", "AuDiO_LiNk_DeReCT": "https://..."}}}}, "500": {"description": "Erreur"}}
+            }
+        },
+        "/facebook": {
+            "post": {
+                "summary": "Télécharger depuis Facebook",
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {"schema": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}}
+                    }
+                },
+                "responses": {"200": {"description": "Succès", "content": {"application/json": {"example": {"status": "success", "ViDeO_LiNk_DeReCT": "https://...", "Quality": "Normal"}}}}, "500": {"description": "Erreur"}}
+            }
+        },
+        "/pinterest": {
+            "post": {
+                "summary": "Télécharger depuis Pinterest",
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {"schema": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}}
+                    }
+                },
+                "responses": {"200": {"description": "Succès", "content": {"application/json": {"example": {"status": "success", "ViDeO_LiNk_DeReCT": "https://...", "Quality": "Normal"}}}}, "500": {"description": "Erreur"}}
+            }
+        }
+    }
+}
+
+
+@app.route('/openapi.json')
+def openapi():
+    """Return the OpenAPI JSON spec for the application."""
+    return flask.jsonify(OPENAPI_SPEC)
+
+
+@app.route('/docs')
+def docs():
+    """Serve a minimal Swagger UI page that loads our `/openapi.json` spec."""
+    html = """
+    <!doctype html>
+    <html lang="fr">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>MediaSurfer - API Docs</title>
+        <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
+      </head>
+      <body>
+        <div id="swagger-ui"></div>
+        <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+        <script>
+          window.ui = SwaggerUIBundle({
+            url: '/openapi.json',
+            dom_id: '#swagger-ui',
+            presets: [SwaggerUIBundle.presets.apis],
+            layout: 'BaseLayout'
+          })
+        </script>
+      </body>
+    </html>
+    """
+    return html
+
 
 @app.route('/yt', methods=['POST'])
 def yt():
