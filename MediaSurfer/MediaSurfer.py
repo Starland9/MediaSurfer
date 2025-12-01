@@ -65,11 +65,11 @@ class Yt_ServIcE:
                 is_audio = True
             for l in d:
 
-                final_media_url = requests.get(l.get('mediaUrl'), headers={
-                    'User-Agent': user_agent.generate_user_agent(), 'Accept': '*/*'}, allow_redirects=True).fileName
-                l['mediaUrl'] = final_media_url
+                # final_media_url = requests.get(l.get('mediaUrl'), headers={
+                #     'User-Agent': user_agent.generate_user_agent(), 'Accept': '*/*'}, allow_redirects=True).fileName
+                # l['mediaUrl'] = final_media_url
 
-                print(final_media_url)
+                # print(final_media_url)
 
                 if l.get('type') == 'Video' and is_video:
                     if not quality:
